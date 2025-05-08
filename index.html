@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Grooming Dashboard Login</title>
+    <!-- Link to your separate CSS file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- --- HTML BODY CONTENT STARTS HERE --- -->
+
+    <div class="login-container">
+        <img src="pooch-purrfect-logo.png" alt="Pooch Purrfect Salon Logo" class="logo">
+
+        <form id="loginForm" class="login-form">
+            <label for="username">Username or Email:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <div class="button-container">
+                <button type="button" id="staffLoginBtn">Staff Login</button>
+                <button type="button" id="adminLoginBtn">Admin Login</button>
+            </div>
+        </form>
+        <div class="login-footer">
+            <!-- Optional: <a href="#">Forgot Password?</a> -->
+        </div>
+    </div>
+
+    <!-- --- HTML BODY CONTENT ENDS HERE --- -->
+
+    <script>
+        // --- Login Page JavaScript ---
+        (() => {
+            console.log('Script loaded and executing.'); // Check if the script runs at all
+
+            const loginForm = document.getElementById('loginForm');
+            const staffLoginBtn = document.getElementById('staffLoginBtn');
+            const adminLoginBtn = document.getElementById('adminLoginBtn');
+
+            // Check if elements were found
+            if (!loginForm) console.error('Error: loginForm element not found!');
+            if (!staffLoginBtn) console.error('Error: staffLoginBtn element not found!');
+            if (!adminLoginBtn) console.error('Error: adminLoginBtn element not found!');
+
+            // Function to handle login logic based on user type
+            const handleLogin = (userType) => {
+                console.log(`--- Handling ${userType} login ---`);
+
+                const usernameInput = document.getElementById('username');
+                const passwordInput = document.getElementById('password');
+
+                // Check if input elements were found
+                if (!usernameInput) {
+                    console.error('Error: username input element not found!');
+                    return; // Stop execution if input is missing
+                }
+                 if (!passwordInput) {
+                    console.error('Error: password input element not found!');
+                    return; // Stop execution if input is missing
+                }
+
+                const username = usernameInput.value;
+                const password = passwordInput.value;
+
+                console.log('Username entered:', username);
+                console.log('Password entered:', password); // Be cautious logging passwords in real apps
+
+                let loginSuccess = false;
+                let redirectUrl = '';
+
+                if (userType === 'admin') {
+                    console.log('Checking Admin credentials...');
+                    if (username === 'admin' && password === 'admin123') {
+                        loginSuccess = true;
+                        console.log('Admin credentials match!');
+                        alert('Admin Login Successful!'); // Alert before redirect
+                        redirectUrl = 'admin-dashboard.html';
+                        console.log('Redirect URL set to:', redirectUrl);
+                    } else {
+                        console.log('Admin credentials do NOT match.');
+                        alert('Invalid username or password for Admin.');
+                    }
+                } else if (userType === 'staff') {
+                     console.log('Checking Staff credentials...');
+                     // Added more specific logging for staff checks
+                    if (username === 'staff' && password === 'staff123') {
+                         console.log('Staff credentials match (staff/staff123)!');
+                         loginSuccess = true;
+                         alert('Staff Login Successful!');
+                         redirectUrl = 'staff-dashboard.html';
+                         console.log('Redirect URL set to:', redirectUrl);
+                    } else if (username === 'alice' && password === 'password') {
+                         console.log('Staff credentials match (alice/password)!');
+                         loginSuccess = true;
+                         alert('Staff Login Successful!');
+                         redirectUrl = 'staff-dashboard.html';
+                         console.log('Redirect URL set to:', redirectUrl);
+                    } else if (username === 'bob' && password === 'password') {
+                         console.log('Staff credentials match (bob/password)!');
+                         loginSuccess = true;
+                         alert('Staff Login Successful!');
+                         redirectUrl = 'staff-dashboard.html';
+                         console.log('Redirect URL set to:', redirectUrl);
+                    }
+                     else {
+                        console.log('Staff credentials do NOT match any known staff.');
+                        alert('Invalid username or password for Staff.');
+                    }
+                } else {
+                    console.warn(`Unknown userType received: ${userType}`);
+                }
+
+                console.log('Login Success status:', loginSuccess);
+                console.log('Redirect URL before navigation:', redirectUrl);
+
+                // If login was successful and a redirect URL is set, navigate
+                if (loginSuccess && redirectUrl) {
+                    console.log(`Redirecting to: ${redirectUrl}`);
+                    window.location.href = redirectUrl;
+                } else {
+                    console.log('No redirect occurred.');
+                }
+
+
+                // Clear the password field after attempt (good practice)
+                console.log('Clearing password field...');
+                passwordInput.value = '';
+            };
+
+            // Add event listeners to the buttons
+            if (staffLoginBtn) { // Check if button was found before adding listener
+                staffLoginBtn.addEventListener('click', () => {
+                    console.log('Staff Login button clicked.');
+                    handleLogin('staff');
+                });
+            }
+
+            if (adminLoginBtn) { // Check if button was found before adding listener
+                adminLoginBtn.addEventListener('click', () => {
+                    console.log('Admin Login button clicked.');
+                    handleLogin('admin');
+                });
+            }
+
+
+            // Prevent the form from submitting normally when Enter is pressed
+            if (loginForm) { // Check if form was found before adding listener
+                loginForm.addEventListener('submit', (e) => {
+                    console.log('Form submit event detected (prevented).');
+                    e.preventDefault();
+                    // You could potentially default to one of the login types here
+                    // if the user presses Enter, or prompt them. For now, we just
+                    // prevent the default submit.
+                    console.log('Please use the specific login buttons.');
+                });
+            }
+
+             console.log('Script initialization complete. Event listeners added.');
+
+        })();
+    </script>
+
+</body>
+</html>
