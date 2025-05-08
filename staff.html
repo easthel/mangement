@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - Pet Grooming Salon</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your CSS file -->
+    <style>
+      /* Enhanced styles for the Profile section */
+      .profile-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center; /* Center content horizontally */
+          background-color: white;
+          padding: var(--spacing-large);
+          border-radius: 8px; /* Slightly more rounded corners */
+          box-shadow: 0 2px 8px var(--shadow-color); /* Stronger shadow */
+          max-width: 500px; /* Adjust max width */
+          margin: var(--spacing-large) auto; /* Center the profile card and add more margin */
+          text-align: center; /* Center text within the container */
+      }
+
+      .profile-avatar {
+          width: 120px; /* Increased avatar size */
+          height: 120px;
+          border-radius: 50%; /* Make it round */
+          object-fit: cover; /* Ensure image covers the area */
+          margin-bottom: var(--spacing-large); /* Space below avatar */
+          border: 3px solid var(--primary-color); /* Add a border */
+      }
+
+      .profile-name {
+          font-size: 1.8em; /* Larger name font */
+          margin-bottom: var(--spacing-small);
+          color: var(--text-color);
+      }
+
+      .profile-role {
+          font-size: 1.1em;
+          color: var(--secondary-text-color);
+          margin-bottom: var(--spacing-large); /* Space below role */
+      }
+
+      .profile-details-grid {
+          display: grid;
+          grid-template-columns: auto 1fr; /* Auto width for labels, fill space for values */
+          gap: var(--spacing-medium) var(--spacing-large); /* Gap between rows and columns */
+          text-align: left; /* Align detail text to the left */
+          width: 100%; /* Use full width of the container */
+          max-width: 350px; /* Limit the width of the details grid */
+      }
+
+      .profile-details-grid label {
+          font-weight: bold;
+          color: #555;
+      }
+
+      .profile-details-grid p {
+          margin: 0;
+          color: var(--text-color);
+      }
+
+
+       /* Add a class to hide elements based on role */
+       .admin-only {
+           display: none !important;
+       }
+
+       /* Make sure the modal is on top */
+      .modal {
+            z-index: 1000;
+        }
+
+        /* Basic styles for Feedback section */
+        .feedback-item {
+            border: 1px solid #ddd;
+            padding: var(--spacing-medium);
+            margin-bottom: var(--spacing-medium);
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        .feedback-item h3 {
+            margin-top: 0;
+            margin-bottom: var(--spacing-small);
+            color: #333;
+        }
+
+        .feedback-item p {
+            margin-bottom: var(--spacing-small);
+        }
+
+         .feedback-item .meta {
+            font-size: 0.9em;
+            color: #777;
+         }
+
+         .feedback-item .actions {
+             margin-top: var(--spacing-small);
+         }
+
+          /* Style for Notes in Records table */
+         .record-notes {
+             white-space: pre-wrap; /* Preserve line breaks and wrap text */
+         }
+
+          /* Style for the Record Management Form */
+         #recordForm {
+             margin-bottom: var(--spacing-large);
+             padding: var(--spacing-medium);
+             background-color: #eef; /* Light blue background for the form */
+             border-radius: 4px;
+             border: 1px solid #ccf;
+         }
+
+         #recordForm label {
+             display: block;
+             margin-bottom: var(--spacing-small);
+             font-weight: bold;
+         }
+
+          #recordForm input[type="text"],
+          #recordForm textarea {
+              width: calc(100% - 16px); /* Adjust for padding */
+              padding: 8px;
+              margin-bottom: var(--spacing-medium);
+              border: 1px solid #ccc;
+              border-radius: 4px;
+          }
+
+           #recordForm textarea {
+               min-height: 100px; /* Give more space for notes */
+               resize: vertical; /* Allow vertical resizing */
+           }
+
+           #recordForm button {
+               padding: 10px 20px;
+               background-color: var(--primary-color);
+               color: white;
+               border: none;
+               border-radius: 4px;
+               cursor: pointer;
+               transition: background-color 0.2s ease;
+           }
+
+            #recordForm button:hover {
+                background-color: var(--primary-dark-color);
+            }
+
+             /* Add some spacing between form and table */
+            #records table {
+                margin-top: var(--spacing-large);
+            }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <img src="https://via.placeholder.com/100" alt="Pet Grooming Salon Logo" class="logo">
+        <nav>
+            <ul>
+                 <!-- Profile is now the first item and active initially -->
+                <li class="nav-item active" data-section="profile" role="button" tabindex="0" aria-pressed="true">Profile</li>
+                 <!-- Appointments is now the second item -->
+                <li class="nav-item" data-section="appointments" role="button" tabindex="0" aria-pressed="false">Appointments</li>
+                 <!-- Added Record Management -->
+                <li class="nav-item" data-section="records" role="button" tabindex="0" aria-pressed="false">Record Management</li>
+                 <!-- Added Customers Feedback -->
+                <li class="nav-item" data-section="feedback" role="button" tabindex="0" aria-pressed="false">Customer Feedback</li>
+            </ul>
+        </nav>
+         <div class="nav-item logout-item" id="logoutBtn" role="button" tabindex="0" aria-pressed="false">Log Out</div>
+    </aside>
+
+    <main class="main-content">
+
+         <!-- Profile Section (Staff and Admin) -->
+        <section id="profile" class="section active-section" aria-hidden="false"> <!-- Set Profile as active initially -->
+             <h1 class="section-title">My Profile</h1>
+             <div class="profile-container">
+                 <!-- Placeholder for staff avatar -->
+                 <img src="https://via.placeholder.com/120/cccccc?text=Staff" alt="Staff Avatar" class="profile-avatar">
+
+                 <h2 class="profile-name" id="profileName">Loading...</h2>
+                 <p class="profile-role" id="profileRole">Loading...</p>
+
+                 <div class="profile-details-grid">
+                     <label>Availability:</label>
+                     <p id="profileAvailability">Loading...</p>
+
+                      <!-- Add more profile details here if available -->
+                     <label>Contact:</label>
+                     <p id="profileContact">N/A</p>
+
+                 </div>
+                 <!-- Optional: Add an edit button for the staff member to update their profile -->
+                 <!-- <button class="button primary" style="margin-top: var(--spacing-large);">Edit Profile</button> -->
+             </div>
+        </section>
+
+
+        <!-- Appointment Management Section -->
+        <section id="appointments" class="section" hidden aria-hidden="true"> <!-- Set Appointments as hidden initially -->
+            <h1 class="section-title">My Appointments</h1> <!-- Changed title -->
+
+             <!-- The form for scheduling appointments is removed -->
+             <!-- Staff can only view, complete, or delete existing appointments from the table -->
+
+            <table>
+                <caption>Upcoming & Recent Appointments Assigned to You</caption> <!-- Updated caption -->
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Pet</th>
+                        <th>Service</th>
+                        <th>Date & Time</th>
+                        <th>Status</th>
+                         <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="apptTableBody">
+                    <!-- Appointments will be loaded here by JS -->
+                     <tr><td colspan="7" style="text-align: center;">Loading appointments...</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+         <!-- Record Management Section -->
+        <section id="records" class="section" hidden aria-hidden="true">
+             <h1 class="section-title">Pet Records</h1>
+
+             <!-- Form to add/update records -->
+             <form id="recordForm">
+                 <input type="hidden" id="recordId"> <!-- Hidden field for editing -->
+                 <label for="recordCustomerName">Customer Name:</label>
+                 <input type="text" id="recordCustomerName" name="recordCustomerName" required>
+
+                 <label for="recordPetName">Pet Name:</label>
+                 <input type="text" id="recordPetName" name="recordPetName" required>
+
+                 <label for="recordNotes">Notes:</label>
+                 <textarea id="recordNotes" name="recordNotes" rows="4" required></textarea>
+
+                 <button type="submit">Save Record</button>
+                  <!-- Add a cancel button for editing -->
+                 <button type="button" id="cancelEditRecord" style="display: none;">Cancel Edit</button>
+             </form>
+
+            <table>
+                <caption>Pet Records</caption>
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Pet</th>
+                        <th>Notes</th>
+                         <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="recordTableBody">
+                    <!-- Records will be loaded here by JS -->
+                     <tr><td colspan="4" style="text-align: center;">Loading records...</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+         <!-- Customers Feedback Section -->
+         <section id="feedback" class="section" hidden aria-hidden="true">
+             <h1 class="section-title">Customer Feedback Assigned to You</h1> <!-- Updated title -->
+
+             <!-- Maybe a form to add internal notes about feedback received verbally? -->
+             <!-- For now, let's just display feedback -->
+             <div id="feedbackList">
+                 <!-- Feedback items will be loaded here by JS -->
+                 <p style="text-align: center;">Loading feedback...</p>
+             </div>
+
+         </section>
+
+
+    </main>
+
+     <!-- Confirmation Modal for Logout -->
+    <div id="confirmationModal" class="modal" role="dialog" aria-modal="true" hidden aria-hidden="true">
+        <div class="modal-content">
+            <h2>Confirm Logout</h2>
+            <p>Are you sure you want to log out?</p>
+            <div class="modal-buttons">
+                <button id="confirmLogoutBtn">Yes, Log Out</button>
+                <button id="cancelLogoutBtn" class="secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        (() => {
+            // --- Simulate User Role (Replace with actual authentication logic) ---
+            const currentUserRole = 'Staff'; // Set to 'Admin' or 'Staff'
+            // ----------------------------------------------------------------
+
+            // --- Simulate the current logged-in staff member's details ---
+            // We'll use the staff member's name to filter appointments and feedback
+             const loggedInStaffName = 'Alice Smith'; // Simulate the name of the logged-in staff
+             let currentStaffMember = { name: loggedInStaffName, role: 'Groomer', availability: 'Mon-Fri, 9-5', contact: 'alice.s@example.com' };
+            // -------------------------------------------------------------
+
+
+            // Navigation and section toggle
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.section');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const confirmationModal = document.getElementById('confirmationModal');
+            const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+            const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+
+            // Function to handle navigation item clicks
+            function handleNavItemClick() {
+                const item = this; // 'this' refers to the clicked nav item
+                if (item.classList.contains('active')) return;
+
+                // Remove active class from all nav items
+                navItems.forEach(i => {
+                    i.classList.remove('active');
+                    i.setAttribute('aria-pressed', 'false');
+                });
+                item.classList.add('active');
+                item.setAttribute('aria-pressed', 'true');
+
+                const target = item.getAttribute('data-section');
+
+                // Hide all sections and mark them as hidden
+                sections.forEach(sec => {
+                    sec.hidden = true;
+                    sec.classList.remove('active-section');
+                    sec.setAttribute('aria-hidden', 'true');
+                });
+
+                // Show the target section and mark it as active
+                const targetSection = document.getElementById(target);
+                if (targetSection) {
+                    targetSection.hidden = false;
+                    targetSection.classList.add('active-section');
+                    targetSection.setAttribute('aria-hidden', 'false');
+                }
+
+                // Call render functions for the active section
+                if (target === 'profile') {
+                     renderProfile();
+                } else if (target === 'appointments') {
+                    renderAppointments(); // Render appointments filtered by staff
+                } else if (target === 'records') {
+                     renderRecords(); // Render records for Staff
+                } else if (target === 'feedback') {
+                     renderFeedback(); // Render feedback for Staff, filtered by staff
+                }
+            }
+
+            // Function to handle keydown events on navigation items (for accessibility)
+            function handleNavItemKeydown(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click(); // Trigger the click event
+                }
+            }
+
+            // Add event listeners to navigation items
+            navItems.forEach(item => {
+                item.addEventListener('click', handleNavItemClick);
+                item.addEventListener('keydown', handleNavItemKeydown);
+            });
+
+
+            // Log out button functionality
+            logoutBtn.addEventListener('click', () => {
+                showConfirmationModal();
+            });
+
+            // Accessibility for logout button
+            logoutBtn.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    logoutBtn.click(); // Trigger the click event
+                }
+            });
+
+            // Show the confirmation modal
+            function showConfirmationModal() {
+                confirmationModal.hidden = false;
+                confirmationModal.setAttribute('aria-hidden', 'false');
+                confirmationModal.style.display = 'flex'; // Use flex for centering
+                document.body.classList.add('modal-open'); // Add class to body to prevent scrolling
+                confirmLogoutBtn.focus(); // Focus the confirm button for accessibility
+            }
+
+            // Hide the confirmation modal
+            function hideConfirmationModal() {
+                confirmationModal.hidden = true;
+                confirmationModal.setAttribute('aria-hidden', 'true');
+                confirmationModal.style.display = 'none';
+                document.body.classList.remove('modal-open'); // Remove body class
+            }
+
+            // Confirm logout action
+            confirmLogoutBtn.addEventListener('click', () => {
+                alert('Logging out...'); // Replace with actual logout logic
+                hideConfirmationModal();
+                // Redirect to login page: window.location.href = '/login';
+            });
+
+            // Cancel logout action
+            cancelLogoutBtn.addEventListener('click', () => {
+                hideConfirmationModal();
+            });
+
+            // Close modal if clicking outside the modal content
+            confirmationModal.addEventListener('click', (e) => {
+                if (e.target === confirmationModal) {
+                    hideConfirmationModal();
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !confirmationModal.hidden) {
+                    hideConfirmationModal();
+                }
+            });
+
+
+            // Data stores (Using localStorage for persistence)
+            // Initialize data from localStorage or with defaults
+            // Added 'staffMember' property to appointments
+            let appointments = JSON.parse(localStorage.getItem('appointments')) || [
+                { customer: "John Doe", pet: "Fido", service: "Bathing", datetime: "2024-07-01T10:30", status: "Scheduled", price: 20.00, staffMember: "Alice Smith" },
+                { customer: "Sarah Lee", pet: "Mittens", service: "Grooming", datetime: "2024-07-02T13:00", status: "Completed", price: 50.00, staffMember: "Alice Smith" },
+                { customer: "Peter Jones", pet: "Rex", service: "Haircut", datetime: new Date().toISOString().split('T')[0] + 'T11:00', status: "Scheduled", price: 35.00, staffMember: "Bob Johnson" } // This appointment is for Bob
+            ];
+
+            let records = JSON.parse(localStorage.getItem('records')) || [
+                 { id: 1, customer: "John Doe", pet: "Fido", notes: "Very energetic, requires patience.\n--- 2024-07-10 ---\nReacted well to hypoallergenic shampoo." },
+                 { id: 2, customer: "Sarah Lee", pet: "Mittens", notes: "Allergic to certain shampoos, use hypoallergenic." }
+            ];
+
+             // Added 'staffMember' property to feedback
+             let feedback = JSON.parse(localStorage.getItem('feedback')) || [
+                 { id: 1, customer: "John Doe", date: new Date().toISOString(), comment: "Great bath service, Fido smells amazing!", rating: 5, staffMember: "Alice Smith" }, // Feedback related to Alice's service
+                 { id: 2, customer: "Sarah Lee", date: new Date(Date.now() - 86400000).toISOString(), comment: "Mittens looks adorable after the groom! Very happy.", rating: 5, staffMember: "Alice Smith" }, // Feedback related to Alice's service
+                 { id: 3, customer: "Peter Jones", date: new Date(Date.now() - (2 * 86400000)).toISOString(), comment: "Rex seemed a bit stressed, but the haircut looks good.", rating: 4, staffMember: "Bob Johnson" } // Feedback related to Bob's service
+             ];
+
+            // Staff data is still loaded to populate the profile section
+            let staff = JSON.parse(localStorage.getItem('staff')) || [
+                 { name: 'Alice Smith', role: 'Groomer', availability: 'Mon-Fri, 9-5', contact: 'alice.s@example.com' },
+                 { name: 'Bob Johnson', role: 'Bather', availability: 'Tue-Sat, 10-6', contact: 'bob.j@example.com' },
+                 { name: 'Charlie Brown', role: 'Receptionist', availability: 'Mon-Wed, 9-1', contact: 'charlie.b@example.com' }
+            ];
+
+             // Admin-only data (sales, inventory, users) is not needed for rendering in this version
+             // but is still loaded to maintain consistency with localStorage if needed elsewhere.
+
+
+            // Function to save data to localStorage
+            function saveData() {
+                // Staff can save appointments (completing/deleting), records (adding/editing/deleting), and potentially add feedback (if form was added)
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                localStorage.setItem('records', JSON.stringify(records));
+                localStorage.setItem('feedback', JSON.stringify(feedback)); // Save feedback data
+                // Staff profile is likely managed by Admin, so no need to save staff data here
+                // localStorage.setItem('staff', JSON.stringify(staff)); // Removed saving staff data here
+            }
+
+            // Helper function to format date and time
+            function formatDateTime(dtstr) {
+                const dt = new Date(dtstr);
+                if (isNaN(dt)) return 'Invalid date';
+                return dt.toLocaleString(undefined, {
+                    dateStyle: 'medium',
+                    timeStyle: 'short'
+                });
+            }
+
+             // Helper function to format timestamp (short date and time)
+             function formatTimestamp(dtstr) {
+                const dt = new Date(dtstr);
+                if (isNaN(dt)) return 'Invalid date';
+                return dt.toLocaleString(undefined, {
+                    dateStyle: 'short',
+                    timeStyle: 'short'
+                });
+            }
+
+            // Helper function to get service price (if not stored with appointment) - Not strictly needed but kept
+            const servicePrices = {
+                "Bathing": 20.00,
+                "Haircut": 35.00,
+                "Nail Care": 15.00,
+                "Grooming": 50.00
+            };
+
+            function getServicePrice(serviceName) {
+                return servicePrices[serviceName] || 0;
+            }
+
+
+            // Profile Section
+            const profileNameEl = document.getElementById('profileName');
+            const profileRoleEl = document.getElementById('profileRole');
+            const profileAvailabilityEl = document.getElementById('profileAvailability');
+            const profileContactEl = document.getElementById('profileContact'); // Get the new contact element
+
+            function renderProfile() {
+                // Find the current staff member based on the simulated loggedInStaffName
+                 // In a real app, you'd match by user ID or similar
+                 // Using find() which returns undefined if not found
+                currentStaffMember = staff.find(member => member.name === loggedInStaffName);
+
+
+                if (currentStaffMember) {
+                    if (profileNameEl) profileNameEl.textContent = currentStaffMember.name;
+                    if (profileRoleEl) profileRoleEl.textContent = currentStaffMember.role;
+                    if (profileAvailabilityEl) profileAvailabilityEl.textContent = currentStaffMember.availability || 'Not specified';
+                    // Populate the new contact element
+                    if (profileContactEl) profileContactEl.textContent = currentStaffMember.contact || 'Not provided';
+
+                } else {
+                     if (profileNameEl) profileNameEl.textContent = 'Staff member not found.';
+                     if (profileRoleEl) profileRoleEl.textContent = 'N/A';
+                     if (profileAvailabilityEl) profileAvailabilityEl.textContent = 'N/A';
+                     if (profileContactEl) profileContactEl.textContent = 'N/A'; // Clear contact if staff not found
+                     console.warn(`Staff member with name "${loggedInStaffName}" not found in staff data.`);
+                }
+            }
+
+
+            // Appointment Management
+            // The form for scheduling appointments is removed
+            const apptTableBody = document.getElementById('apptTableBody');
+
+            function renderAppointments() {
+                if (!apptTableBody) return; // Exit if the table body doesn't exist
+
+                apptTableBody.innerHTML = '';
+
+                // Filter appointments to show only those assigned to the logged-in staff member
+                const staffAppointments = appointments.filter(appt => appt.staffMember === loggedInStaffName);
+
+
+                if (staffAppointments.length === 0) {
+                    apptTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No appointments assigned to you.</td></tr>';
+                    return;
+                }
+                // Sort filtered appointments
+                const sortedAppointments = [...staffAppointments].sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+
+                sortedAppointments.forEach((appt, index) => {
+                    // Find the original index in the *full* appointments array before splicing or modifying
+                    // We need the index in the main array to correctly delete/update the source data
+                    const originalIndex = appointments.findIndex(item =>
+                         item.customer === appt.customer &&
+                         item.pet === appt.pet &&
+                         item.datetime === appt.datetime &&
+                         item.staffMember === appt.staffMember // Also match staff member
+                    );
+
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td data-label="Customer">${appt.customer}</td>
+                        <td data-label="Pet">${appt.pet}</td>
+                        <td data-label="Service">${appt.service}</td>
+                        <td data-label="Date & Time">${formatDateTime(appt.datetime)}</td>
+                        <td data-label="Status">${appt.status}</td>
+                        <td data-label="Price">$${appt.price ? appt.price.toFixed(2) : '0.00'}</td>
+                        <td data-label="Actions">
+                            <button data-original-index="${originalIndex}" class="complete-btn"${appt.status === 'Completed' ? ' disabled' : ''}>Complete</button>
+                            <button data-original-index="${originalIndex}" class="delete-btn danger">Delete</button>
+                        </td>
+                    `;
+                    apptTableBody.appendChild(tr);
+                });
+                // No saveData() call needed here, as saving happens in the event listener after action
+            }
+
+            // Event listener for appointment table actions
+            if (apptTableBody) { // Ensure the table body exists
+                 apptTableBody.addEventListener('click', e => {
+                    // Use data-original-index to find the item in the main appointments array
+                    const originalIndex = e.target.getAttribute('data-original-index');
+
+                    if (e.target.classList.contains('complete-btn')) {
+                        // Ensure index is valid and appointment exists and is assigned to the logged-in staff
+                        if (originalIndex !== null && appointments[originalIndex] && appointments[originalIndex].staffMember === loggedInStaffName && appointments[originalIndex].status !== 'Completed') {
+                             appointments[originalIndex].status = 'Completed';
+                             // In a real app, this would likely trigger a sale creation for Admin
+                             saveData(); // Save changes immediately after updating status
+                             renderAppointments(); // Re-render appointments to update the table
+                        }
+                    }
+                    if (e.target.classList.contains('delete-btn')) {
+                         // Ensure index is valid and appointment exists and is assigned to the logged-in staff
+                        if (originalIndex !== null && appointments[originalIndex] && appointments[originalIndex].staffMember === loggedInStaffName && confirm('Are you sure you want to delete this appointment?')) {
+                            appointments.splice(originalIndex, 1);
+                            saveData(); // Save changes immediately after deleting
+                            renderAppointments(); // Re-render appointments to update the table
+                        }
+                    }
+                });
+            }
+
+
+            // Record Management
+            const recordForm = document.getElementById('recordForm');
+            const recordTableBody = document.getElementById('recordTableBody');
+            const recordIdInput = document.getElementById('recordId');
+            const recordCustomerNameInput = document.getElementById('recordCustomerName');
+            const recordPetNameInput = document.getElementById('recordPetName');
+            const recordNotesInput = document.getElementById('recordNotes');
+            const cancelEditRecordBtn = document.getElementById('cancelEditRecord');
+
+            // Handle record form submission - Staff can add/update records
+             if (recordForm) {
+                 recordForm.addEventListener('submit', e => {
+                    e.preventDefault();
+                    const id = recordIdInput.value;
+                    const customer = recordCustomerNameInput.value.trim();
+                    const pet = recordPetNameInput.value.trim();
+                    const notes = recordNotesInput.value.trim();
+
+                    if (!customer || !pet || !notes) {
+                        alert("Please fill in all required fields for the record.");
+                        return;
+                    }
+
+                    if (id) {
+                        // Update existing record
+                        const recordIndex = records.findIndex(rec => rec.id === parseInt(id));
+                        if (recordIndex > -1) {
+                            records[recordIndex].customer = customer;
+                            records[recordIndex].pet = pet;
+                            records[recordIndex].notes = notes;
+                            alert('Record updated successfully!');
+                        } else {
+                            alert('Error: Record not found for updating.');
+                        }
+                    } else {
+                        // Add new record
+                        const newId = records.length ? Math.max(...records.map(r => r.id)) + 1 : 1;
+                        records.push({
+                            id: newId,
+                            customer,
+                            pet,
+                            notes
+                        });
+                        alert('Record added successfully!');
+                    }
+
+                    recordForm.reset();
+                    recordIdInput.value = ''; // Clear hidden ID
+                    cancelEditRecordBtn.style.display = 'none'; // Hide cancel button
+                    renderRecords(); // Re-render the record list
+                    saveData(); // Save changes
+                 });
+             }
+
+
+            function renderRecords() {
+                if (!recordTableBody) return; // Exit if the table body doesn't exist
+
+                recordTableBody.innerHTML = '';
+                if (records.length === 0) {
+                    recordTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No pet records found.</td></tr>';
+                    return;
+                }
+                // Sort records by customer and then pet name
+                const sortedRecords = [...records].sort((a, b) => {
+                    const custCompare = a.customer.localeCompare(b.customer);
+                    if (custCompare !== 0) return custCompare;
+                    return a.pet.localeCompare(b.pet);
+                });
+
+
+                sortedRecords.forEach((rec, idx) => {
+                     // Find the original index in the unsorted array before splicing or modifying
+                    const originalIndex = records.findIndex(r => r.id === rec.id);
+
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td data-label="Customer">${rec.customer}</td>
+                        <td data-label="Pet">${rec.pet}</td>
+                        <td data-label="Notes" class="record-notes">${rec.notes ? rec.notes.replace(/\n/g, '<br>') : ''}</td> <!-- Display notes with line breaks -->
+                        <td data-label="Actions">
+                             <button data-id="${rec.id}" class="edit-rec-btn">Edit</button>
+                             <button data-id="${rec.id}" class="delete-rec-btn danger">Delete</button>
+                        </td>
+                    `;
+                    recordTableBody.appendChild(tr);
+                });
+                 // saveData() is called after add/edit/delete actions
+            }
+
+            // Event listener for Record table actions
+             if (recordTableBody) {
+                 recordTableBody.addEventListener('click', e => {
+                     // Handle Edit button click
+                    if (e.target.classList.contains('edit-rec-btn')) {
+                        const recordId = parseInt(e.target.getAttribute('data-id'));
+                        const recordToEdit = records.find(rec => rec.id === recordId);
+
+                        if (recordToEdit) {
+                            recordIdInput.value = recordToEdit.id;
+                            recordCustomerNameInput.value = recordToEdit.customer;
+                            recordPetNameInput.value = recordToEdit.pet;
+                            recordNotesInput.value = recordToEdit.notes;
+                            cancelEditRecordBtn.style.display = 'inline-block'; // Show cancel button
+                             // Scroll to the form
+                            recordForm.scrollIntoView({ behavior: 'smooth' });
+                        } else {
+                            alert('Error: Record not found for editing.');
+                        }
+                    }
+
+                    // Handle Delete button click
+                    if (e.target.classList.contains('delete-rec-btn')) {
+                        const recordIdToDelete = parseInt(e.target.getAttribute('data-id'));
+                         const recordToDelete = records.find(rec => rec.id === recordIdToDelete);
+
+                         if (recordToDelete && confirm(`Are you sure you want to delete the record for ${recordToDelete.pet} (${recordToDelete.customer})?`)) {
+                            const indexToDelete = records.findIndex(rec => rec.id === recordIdToDelete);
+                            if (indexToDelete > -1) {
+                                records.splice(indexToDelete, 1);
+                                renderRecords();
+                                saveData(); // Save after deleting
+                                // If the deleted record was being edited, clear the form
+                                if (parseInt(recordIdInput.value) === recordIdToDelete) {
+                                    recordForm.reset();
+                                    recordIdInput.value = '';
+                                    cancelEditRecordBtn.style.display = 'none';
+                                }
+                            } else {
+                                alert('Error deleting record: Record not found.');
+                            }
+                        }
+                    }
+                });
+             }
+
+             // Handle Cancel Edit button click
+             if (cancelEditRecordBtn) {
+                 cancelEditRecordBtn.addEventListener('click', () => {
+                     recordForm.reset();
+                     recordIdInput.value = '';
+                     cancelEditRecordBtn.style.display = 'none';
+                 });
+             }
+
+
+            // Customers Feedback Section
+            const feedbackListDiv = document.getElementById('feedbackList');
+
+            function renderFeedback() {
+                if (!feedbackListDiv) return; // Exit if the div doesn't exist
+
+                feedbackListDiv.innerHTML = '';
+
+                // Filter feedback to show only those associated with the logged-in staff member
+                const staffFeedback = feedback.filter(item => item.staffMember === loggedInStaffName);
+
+
+                if (staffFeedback.length === 0) {
+                    feedbackListDiv.innerHTML = '<p style="text-align: center;">No customer feedback assigned to you yet.</p>'; // Updated message
+                    return;
+                }
+                // Sort filtered feedback by date, newest first
+                const sortedFeedback = [...staffFeedback].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                sortedFeedback.forEach((item, idx) => {
+                    const feedbackItemDiv = document.createElement('div');
+                    feedbackItemDiv.classList.add('feedback-item');
+                    feedbackItemDiv.innerHTML = `
+                        <h3>Feedback from ${item.customer}</h3>
+                        <p>${item.comment}</p>
+                        <p class="meta">Rating: ${item.rating}/5 | Received: ${formatTimestamp(item.date)}</p>
+                        <div class="actions">
+                             <!-- Staff might be able to add internal notes or mark as reviewed -->
+                             <!-- <button data-id="${item.id}" class="add-note-btn">Add Internal Note</button> -->
+                             <!-- <button data-id="${item.id}" class="mark-reviewed-btn">Mark as Reviewed</button> -->
+                        </div>
+                    `;
+                    feedbackListDiv.appendChild(feedbackItemDiv);
+                });
+                 // No saveData() needed here unless staff can add feedback or modify feedback
+            }
+
+            // Optional: Add event listeners for actions within feedback items if needed
+            // if (feedbackListDiv) {
+            //     feedbackListDiv.addEventListener('click', e => {
+            //         if (e.target.classList.contains('add-note-btn')) {
+            //             const feedbackId = parseInt(e.target.getAttribute('data-id'));
+            //             // Implement logic to add an internal note for this feedback item
+            //             alert(`Adding note for feedback ID: ${feedbackId}`);
+            //         }
+            //         // Add other actions here
+            //     });
+            // }
+
+
+            // --- Initial Setup ---
+            // Hide admin-only sections and nav items (already removed from HTML)
+            // if (currentUserRole === 'Staff') { ... } // This block is less necessary now as elements are removed
+
+             // Ensure the correct section is active on load
+             // Manually set Profile as active initially in HTML
+             renderProfile(); // Render profile data on load
+             // renderAppointments(); // Appointments is hidden initially, will be rendered when clicked
+             // renderRecords(); // Records is hidden initially, will be rendered when clicked
+             // renderFeedback(); // Feedback is hidden initially, will be rendered when clicked
+
+
+        })();
+    </script>
+
+</body>
+</html>

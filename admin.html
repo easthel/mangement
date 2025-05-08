@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pooch Purrfect Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- CSS is now in style.css -->
+</head>
+
+<body>
+  <nav class="sidebar" role="navigation" aria-label="Main Navigation">
+    <img src="logo.png" class="logo" alt="Pooch Purrfect Logo">
+    <div class="nav-item active" data-section="dashboard" tabindex="0" role="button" aria-pressed="true"
+      aria-label="Dashboard Overview">Dashboard</div>
+    <div class="nav-item" data-section="appointments" tabindex="0" role="button" aria-pressed="false"
+      aria-label="Appointments Management">Appointments</div>
+    <div class="nav-item" data-section="sales" tabindex="0" role="button" aria-pressed="false"
+      aria-label="Sales Overview">Sales</div>
+    <div class="nav-item" data-section="inventory" tabindex="0" role="button" aria-pressed="false"
+      aria-label="Inventory Management">Inventory Management</div>
+    <div class="nav-item" data-section="records" tabindex="0" role="button" aria-pressed="false"
+      aria-label="Record Management">Record Management</div>
+    <div class="nav-item" data-section="staff" tabindex="0" role="button" aria-pressed="false"
+      aria-label="Staff and Scheduling">Staff & Scheduling</div>
+    <div class="nav-item" data-section="users" tabindex="0" role="button" aria-pressed="false"
+      aria-label="User Management">User Management</div>
+
+    <!-- Log Out Button -->
+    <div class="nav-item logout-item" id="logoutBtn" tabindex="0" role="button" aria-label="Log out">Log Out</div>
+  </nav>
+
+  <main class="main-content" role="main" tabindex="0">
+    <!-- Dashboard -->
+    <section id="dashboard" class="section active-section" aria-live="polite">
+      <h1 class="section-title">Dashboard</h1>
+      <div class="dashboard-overview">
+        <div class="overview-card">
+          <h3>Total Sales</h3>
+          <p id="dashboardTotalSales">$0.00</p>
+        </div>
+        <div class="overview-card">
+          <h3>Appointments Today</h3>
+          <p id="dashboardApptsToday">0</p>
+        </div>
+        <div class="overview-card">
+          <h3>Revenue This Month</h3>
+          <p id="dashboardRevenueMonth">$0.00</p>
+        </div>
+        <div class="overview-card">
+          <h3>Low Stock Items</h3>
+          <p id="dashboardLowStock">0</p>
+        </div>
+      </div>
+
+      <div class="recent-activity">
+        <h2>Recent Activity</h2>
+        <table class="activity-table" aria-describedby="activityTableDesc">
+          <caption id="activityTableDesc" class="visually-hidden">Recent System Activity</caption>
+          <thead>
+            <tr>
+              <th>Activity Type</th>
+              <th>Details</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody id="activityTableBody">
+            <!-- Dynamic recent activity rows -->
+            <tr>
+              <td colspan="3" style="text-align: center;">No recent activity.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Appointment Management -->
+    <section id="appointments" class="section" aria-live="polite" hidden>
+      <h1 class="section-title">Appointments</h1>
+
+      <!-- Removed the appointment form from here -->
+
+      <table aria-describedby="apptTableDesc">
+        <caption id="apptTableDesc">List of Appointments</caption>
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Pet</th>
+            <th>Service</th>
+            <th>Date & Time</th>
+            <th>Status</th>
+             <th>Price</th> <!-- Added Price column -->
+            <th style="width: 120px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="apptTableBody">
+          <!-- dynamic appointment rows -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Sales -->
+    <section id="sales" class="section" aria-live="polite" hidden>
+      <h1 class="section-title">Sales Overview</h1>
+      <table class="sales-overview-table" aria-label="Sales Summary Table" role="table">
+        <thead>
+          <tr>
+            <th scope="col">Metric</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total Sales</td>
+            <td id="totalSales">$0.00</td>
+          </tr>
+          <tr>
+            <td>Appointments Completed</td>
+            <td id="apptsCompleted">0</td>
+          </tr>
+          <tr>
+            <td>Revenue This Month</td>
+            <td id="revenueMonth">$0.00</td>
+          </tr>
+        </tbody>
+      </table>
+      <section class="sales-recent" aria-label="Recent Sales Records Table">
+        <h2>Recent Sales</h2>
+        <table class="sales-table" aria-describedby="salesTableDesc">
+          <caption id="salesTableDesc">Recent Sales Records</caption>
+          <thead>
+            <tr>
+              <th scope="col">Invoice #</th>
+              <th scope="col">Date</th>
+              <th scope="col">Customer</th>
+              <th scope="col">Service</th>
+              <th scope="col">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="salesTableBody">
+            <!-- dynamic sales rows -->
+          </tbody>
+        </table>
+      </section>
+    </section>
+
+    <!-- Inventory Management -->
+    <section id="inventory" class="section" aria-live="polite" hidden>
+      <h1 class="section-title">Inventory Management</h1>
+      <div class="inventory-search-container">
+        <input type="text" id="inventorySearchInput" placeholder="Search inventory items..." aria-label="Search inventory items" />
+        <button id="inventorySearchBtn" aria-label="Search Inventory">Search</button>
+      </div>
+
+      <form class="form-inline" id="inventoryForm" aria-label="Add or Edit inventory item">
+        <label for="itemName">Item Name:</label>
+        <input type="text" id="itemName" required placeholder="Shampoo" />
+        <label for="itemQty">Quantity:</label>
+        <input type="number" id="itemQty" min="0" required placeholder="10" />
+        <button type="submit" id="addBtn">Add Item</button>
+        <!-- Update and Cancel buttons are handled via JavaScript -->
+        <input type="hidden" id="editingInventoryIndex">
+        <button type="button" id="updateBtn" class="hidden">Update Item</button>
+        <button type="button" id="cancelBtn" class="hidden">Cancel Edit</button>
+      </form>
+      <table aria-describedby="inventoryTableDesc">
+        <caption id="inventoryTableDesc">Inventory Items</caption>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th style="width: 160px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="inventoryTableBody">
+          <!-- dynamic inventory rows -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Record Management -->
+    <section id="records" class="section" aria-live="polite" hidden>
+      <h1 class="section-title">Record Management</h1>
+      <form class="form-inline" id="recordForm" aria-label="Add or Update pet record">
+        <label for="recCustomer">Customer Name:</label>
+        <input type="text" id="recCustomer" required placeholder="Jane Smith" />
+        <label for="recPet">Pet Name:</label>
+        <input type="text" id="recPet" required placeholder="Buddy" />
+        <label for="recNotes">Notes:</label>
+        <input type="text" id="recNotes" placeholder="Allergic to shampoo" />
+        <button type="submit">Add / Update Record</button>
+      </form>
+      <table aria-describedby="recordTableDesc">
+        <caption id="recordTableDesc">Pet Records</caption>
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Pet</th>
+            <th>Notes</th>
+            <th style="width: 80px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="recordTableBody">
+          <!-- dynamic records rows -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Staff and Scheduling -->
+    <section id="staff" class="section" aria-live="polite" hidden>
+      <h1 class="section-title">Staff & Scheduling</h1>
+      <form class="form-inline" id="staffForm" aria-label="Add New Staff">
+        <label for="staffName">Staff Name:</label>
+        <input type="text" id="staffName" required placeholder="Alice" />
+        <label for="staffRole">Role:</label>
+        <select id="staffRole" required>
+          <option value="">Select Role</option>
+          <option value="Groomer">Groomer</option>
+          <option value="Manager">Manager</option>
+        </select>
+         <label for="staffAvailability">Availability:</label>
+        <input type="text" id="staffAvailability" placeholder="Tue-Sun 9:00am-5:00pm" />
+        <button type="submit">Add Staff</button>
+      </form>
+
+      <h2>Staff List</h2>
+      <table aria-describedby="staffTableDesc">
+        <caption id="staffTableDesc">List of Staff</caption>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Availability</th>
+            <th style="width: 80px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="staffTableBody">
+          <!-- dynamic staff rows -->
+        </tbody>
+      </table>
+    </section>
+
+     <!-- User Management -->
+    <section id="users" class="section" aria-live="polite" hidden>
+      <h1 class="section-title">User Management</h1>
+       <form class="form-inline" id="userForm" aria-label="Add New User">
+        <label for="userName">User Name:</label>
+        <input type="text" id="userName" required placeholder="admin" />
+        <label for="userPassword">Password:</label>
+        <input type="password" id="userPassword" required placeholder="password" />
+        <label for="userRole">Role:</label>
+        <select id="userRole" required>
+          <option value="">Select Role</option>
+          <option value="Admin">Admin</option>
+          <option value="Staff">Staff</option>
+        </select>
+        <button type="submit">Add User</button>
+      </form>
+
+      <h2>User List</h2>
+      <table aria-describedby="userTableDesc">
+        <caption id="userTableDesc">List of Users</caption>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Password</th> <!-- Added Password Column Header -->
+             <th style="width: 80px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <!-- dynamic user rows -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Confirmation Dialog (Modal) -->
+  <div id="confirmationModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+      <div class="modal-content">
+          <h2 id="modalTitle">Confirm Logout</h2>
+          <p>Are you sure you want to log out?</p>
+          <div class="modal-buttons">
+              <button id="confirmLogoutBtn" class="danger">Yes, Log Out</button>
+              <button id="cancelLogoutBtn" class="secondary">No, Cancel</button>
+          </div>
+      </div>
+  </div>
+
+
+  <script>
+    (() => {
+      // Navigation and section toggle
+      const navItems = document.querySelectorAll('.nav-item');
+      const sections = document.querySelectorAll('.section');
+      const logoutBtn = document.getElementById('logoutBtn'); // Get the logout button
+      const confirmationModal = document.getElementById('confirmationModal'); // Get the modal
+      const confirmLogoutBtn = document.getElementById('confirmLogoutBtn'); // Get confirm button
+      const cancelLogoutBtn = document.getElementById('cancelLogoutBtn'); // Get cancel button
+
+
+      navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          if (item.classList.contains('active')) return;
+          navItems.forEach(i => {
+            i.classList.remove('active');
+            i.setAttribute('aria-pressed', 'false');
+          });
+          item.classList.add('active');
+          item.setAttribute('aria-pressed', 'true');
+
+          const target = item.getAttribute('data-section');
+          sections.forEach(sec => {
+            if (sec.id === target) {
+              sec.hidden = false;
+              sec.classList.add('active-section');
+              sec.setAttribute('aria-hidden', 'false');
+            } else {
+              sec.hidden = true;
+              sec.classList.remove('active-section');
+              sec.setAttribute('aria-hidden', 'true');
+            }
+          });
+          if (target === 'dashboard') {
+            updateDashboard(); // Update dashboard when it becomes active
+          } else if (target === 'users') {
+             renderUsers(); // Render users when user management becomes active
+          } else if (target === 'appointments') {
+              renderAppointments(); // Render appointments when appointments section becomes active
+          } else if (target === 'sales') {
+              renderSales(); // Render sales when sales section becomes active
+          } else if (target === 'inventory') {
+              renderInventory(); // Render inventory when inventory section becomes active
+          } else if (target === 'records') {
+              renderRecords(); // Render records when records section becomes active
+          } else if (target === 'staff') {
+              renderStaff(); // Render staff when staff section becomes active
+          }
+        });
+        // Keyboard support (Enter/Space)
+        item.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            item.click();
+          }
+        });
+      });
+
+      // Log out button functionality
+      logoutBtn.addEventListener('click', () => {
+          showConfirmationModal(); // Show the confirmation modal
+      });
+
+       // Keyboard support for logout button
+      logoutBtn.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            logoutBtn.click();
+          }
+      });
+
+      // Show the confirmation modal
+      function showConfirmationModal() {
+          confirmationModal.hidden = false;
+          confirmationModal.setAttribute('aria-hidden', 'false');
+          confirmationModal.style.display = 'flex'; // Use flex for centering
+          // Optional: Add a class to body to prevent scrolling
+          document.body.classList.add('modal-open');
+          // Focus on the first actionable element in the modal for accessibility
+          confirmLogoutBtn.focus();
+      }
+
+      // Hide the confirmation modal
+      function hideConfirmationModal() {
+          confirmationModal.hidden = true;
+          confirmationModal.setAttribute('aria-hidden', 'true');
+          confirmationModal.style.display = 'none';
+          document.body.classList.remove('modal-open');
+      }
+
+      // Handle confirmation button click
+      confirmLogoutBtn.addEventListener('click', () => {
+          // In a real application, this would involve:
+          // 1. Clearing authentication tokens/sessions.
+          // 2. Redirecting to a login page.
+          alert('Logging out...'); // Simple alert for demonstration
+          hideConfirmationModal();
+          // --- REDIRECTION CODE IS NOW HERE ---
+          window.location.href = 'login.html'; // This line redirects to login page
+          // --------------------------------------
+      });
+
+      // Handle cancel button click
+      cancelLogoutBtn.addEventListener('click', () => {
+          hideConfirmationModal();
+      });
+
+      // Close modal if clicking outside the modal content (optional)
+      confirmationModal.addEventListener('click', (e) => {
+          if (e.target === confirmationModal) {
+              hideConfirmationModal();
+          }
+      });
+
+      // Close modal if pressing Escape key
+      document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !confirmationModal.hidden) {
+              hideConfirmationModal();
+          }
+      });
+
+
+      // Data stores (Using localStorage for persistence)
+      // Updated sample data to include service and price
+      let appointments = JSON.parse(localStorage.getItem('appointments')) || [
+        {
+          customer: "John Doe",
+          pet: "Fido",
+          service: "Bathing", // Service name
+          datetime: "2024-07-01T10:30",
+          status: "Scheduled",
+          price: 20.00 // Store price with appointment
+        },
+        {
+          customer: "Sarah Lee",
+          pet: "Mittens",
+          service: "Grooming", // Service name
+          datetime: "2024-07-02T13:00",
+          status: "Completed",
+          price: 50.00 // Store price with appointment
+        },
+         {
+          customer: "Peter Jones",
+          pet: "Rex",
+          service: "Haircut", // Service name
+          datetime: new Date().toISOString().split('T')[0] + 'T11:00', // Today's appointment
+          status: "Scheduled",
+          price: 35.00 // Store price with appointment
+        }
+      ];
+      let sales = JSON.parse(localStorage.getItem('sales')) || [];
+      let inventory = JSON.parse(localStorage.getItem('inventory')) || [{ name: 'Shampoo', qty: 3 }, { name: 'Conditioner', qty: 8 }, { name: 'Toys', qty: 15 }, { name: 'Treats', qty: 5 }];
+      let records = JSON.parse(localStorage.getItem('records')) || [];
+      let staff = JSON.parse(localStorage.getItem('staff')) || [];
+      let users = JSON.parse(localStorage.getItem('users')) || []; // New user data store
+
+      // Define service prices (Still needed for sales calculation if price isn't stored)
+      const servicePrices = {
+          "Bathing": 20.00,
+          "Haircut": 35.00,
+          "Nail Care": 15.00,
+          "Grooming": 50.00
+          // Add more services and their prices here
+      };
+
+
+      // Save data to localStorage
+      function saveData() {
+        localStorage.setItem('appointments', JSON.stringify(appointments));
+        localStorage.setItem('sales', JSON.stringify(sales));
+        localStorage.setItem('inventory', JSON.stringify(inventory));
+        localStorage.setItem('records', JSON.stringify(records));
+        localStorage.setItem('staff', JSON.stringify(staff));
+        localStorage.setItem('users', JSON.stringify(users)); // Save user data
+      }
+
+
+      // UTILITIES
+      function formatDateTime(dtstr) {
+        const dt = new Date(dtstr);
+        if (isNaN(dt)) return 'Invalid date';
+        return dt.toLocaleString(undefined, {
+          dateStyle: 'medium',
+          timeStyle: 'short'
+        });
+      }
+
+       function formatTimestamp(dtstr) {
+        const dt = new Date(dtstr);
+        if (isNaN(dt)) return 'Invalid date';
+        return dt.toLocaleString(undefined, {
+          dateStyle: 'short',
+          timeStyle: 'short'
+        });
+      }
+
+      // This function is now less critical if prices are stored with appointments,
+      // but kept as a fallback or for other uses.
+      function getServicePrice(serviceName) {
+          return servicePrices[serviceName] || 0; // Return price or 0 if service not found
+      }
+
+
+      // Dashboard Section
+      const dashboardTotalSalesEl = document.getElementById('dashboardTotalSales');
+      const dashboardApptsTodayEl = document.getElementById('dashboardApptsToday');
+      const dashboardRevenueMonthEl = document.getElementById('dashboardRevenueMonth');
+      const dashboardLowStockEl = document.getElementById('dashboardLowStock');
+      const activityTableBody = document.getElementById('activityTableBody');
+
+
+      function updateDashboard() {
+        // Update Sales Metrics
+        const total = sales.reduce((acc, val) => acc + val.amount, 0);
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const apptsToday = appointments.filter(a => {
+          const apptDate = new Date(a.datetime);
+          return apptDate.getFullYear() === today.getFullYear() &&
+            apptDate.getMonth() === today.getMonth() &&
+            apptDate.getDate() === today.getDate();
+        }).length;
+        const revenueThisMonth = sales.reduce((acc, val) => {
+          const d = new Date(val.date);
+          return (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()) ? acc + val.amount : acc;
+        }, 0);
+
+        dashboardTotalSalesEl.textContent = `$${total.toFixed(2)}`;
+        dashboardApptsTodayEl.textContent = apptsToday;
+        dashboardRevenueMonthEl.textContent = `$${revenueThisMonth.toFixed(2)}`;
+
+        // Update Low Stock Items (threshold set to 5)
+        const lowStockItems = inventory.filter(item => item.qty <= 5);
+        dashboardLowStockEl.textContent = lowStockItems.length;
+
+        // Update Recent Activity (as a table)
+        const recentActivity = [];
+        // Add recent appointments (last 5)
+        appointments.slice(-5).reverse().forEach(appt => {
+          recentActivity.push({
+            type: 'Appointment',
+            details: `${appt.customer} with ${appt.pet} for ${appt.service} (${appt.status})`,
+            timestamp: appt.datetime // Use original datetime string for sorting
+          });
+        });
+        // Add recent sales (last 5)
+        sales.slice(-5).reverse().forEach(sale => {
+          recentActivity.push({
+            type: 'Sale',
+            details: `Invoice #${sale.invoice} for ${sale.customer} - $${sale.amount.toFixed(2)}`,
+            timestamp: sale.date // Use original date string for sorting
+          });
+        });
+
+        // Sort recent activity by timestamp (most recent first)
+        recentActivity.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        // Limit to top 10 activities
+        const displayActivity = recentActivity.slice(0, 10);
+
+
+        activityTableBody.innerHTML = ''; // Clear previous activity
+        if (displayActivity.length === 0) {
+          activityTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">No recent activity.</td></tr>';
+        } else {
+          displayActivity.forEach(activity => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td data-label="Activity Type">${activity.type}</td>
+              <td data-label="Details">${activity.details}</td>
+              <td data-label="Timestamp">${formatTimestamp(activity.timestamp)}</td>
+            `;
+            activityTableBody.appendChild(tr);
+          });
+        }
+      }
+
+
+      // Appointment Management
+      // Removed the reference to apptForm
+      const apptTableBody = document.getElementById('apptTableBody');
+
+      // Removed the apptForm submit event listener
+
+      function renderAppointments() {
+        apptTableBody.innerHTML = '';
+        if (appointments.length === 0) {
+          apptTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No appointments scheduled.</td></tr>'; // Updated colspan
+          return;
+        }
+        // Sort appointments by date and time
+        const sortedAppointments = [...appointments].sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+
+        sortedAppointments.forEach((appt, index) => {
+          // Find the original index in the unsorted array for actions
+          const originalIndex = appointments.findIndex(item => item === appt);
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td data-label="Customer">${appt.customer}</td>
+            <td data-label="Pet">${appt.pet}</td>
+            <td data-label="Service">${appt.service}</td>
+            <td data-label="Date & Time">${formatDateTime(appt.datetime)}</td>
+            <td data-label="Status">${appt.status}</td>
+            <td data-label="Price">$${appt.price ? appt.price.toFixed(2) : '0.00'}</td> <!-- Display price -->
+            <td data-label="Actions">
+              <button data-index="${originalIndex}" class="complete-btn"${appt.status === 'Completed' ? ' disabled' : ''}>Complete</button>
+              <button data-index="${originalIndex}" class="delete-btn danger">Delete</button>
+            </td>
+          `;
+          apptTableBody.appendChild(tr);
+        });
+        saveData(); // Save after rendering
+        updateDashboard(); // Update dashboard metrics
+      }
+
+      apptTableBody.addEventListener('click', e => {
+        if (e.target.classList.contains('complete-btn')) {
+          const idx = e.target.getAttribute('data-index');
+          if (appointments[idx].status === 'Completed') return;
+
+          const appt = appointments[idx]; // Get the appointment object
+
+          // Change status to completed
+          appointments[idx].status = 'Completed';
+
+          // Register sale on completion using the stored price
+          const amount = appt.price || getServicePrice(appt.service); // Use stored price, fallback to lookup
+          const invoiceNum = 'INV' + Date.now(); // Simple unique invoice number
+
+          sales.push({
+            invoice: invoiceNum,
+            date: new Date().toISOString(), // Use current date for sale record
+            customer: appt.customer,
+            service: appt.service,
+            amount: amount
+          });
+
+          renderAppointments(); // Re-render appointments to show status change
+          renderSales(); // Re-render sales to show the new sale
+        }
+        if (e.target.classList.contains('delete-btn')) {
+          const idx = e.target.getAttribute('data-index');
+          if (confirm('Are you sure you want to delete this appointment?')) {
+            appointments.splice(idx, 1);
+            renderAppointments();
+          }
+        }
+      });
+
+      // Sales Section
+      const totalSalesEl = document.getElementById('totalSales');
+      const apptsCompletedEl = document.getElementById('apptsCompleted');
+      const revenueMonthEl = document.getElementById('revenueMonth');
+      const salesTableBody = document.getElementById('salesTableBody');
+
+      function updateSalesSummary() {
+        const total = sales.reduce((acc, val) => acc + val.amount, 0);
+        const completedCount = appointments.filter(a => a.status === 'Completed').length;
+        // Revenue this month (matching current month)
+        const now = new Date();
+        const revenueThisMonth = sales.reduce((acc, val) => {
+          const d = new Date(val.date);
+          return (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()) ? acc + val.amount : acc;
+        }, 0);
+        totalSalesEl.textContent = `$${total.toFixed(2)}`;
+        apptsCompletedEl.textContent = completedCount;
+        revenueMonthEl.textContent = `$${revenueThisMonth.toFixed(2)}`;
+      }
+
+      function renderSales() {
+        salesTableBody.innerHTML = '';
+        if (sales.length === 0) {
+          salesTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No sales recorded yet.</td></tr>';
+        } else {
+          // Displaying last 10 sales, most recent first
+          sales.slice(-10).reverse().forEach(sale => {
+            const tr = document.createElement('tr');
+            const dateObj = new Date(sale.date);
+            tr.innerHTML = `
+            <td data-label="Invoice #" class="invoice">${sale.invoice}</td>
+            <td data-label="Date">${dateObj.toLocaleDateString()}</td>
+            <td data-label="Customer">${sale.customer}</td>
+            <td data-label="Service">${sale.service}</td>
+            <td data-label="Amount" class="amount">$${sale.amount.toFixed(2)}</td>
+          `;
+            salesTableBody.appendChild(tr);
+          });
+        }
+        updateSalesSummary();
+        saveData(); // Save after rendering
+        updateDashboard(); // Update dashboard metrics
+      }
+
+      // Inventory Management
+      const inventoryForm = document.getElementById('inventoryForm');
+      const inventoryTableBody = document.getElementById('inventoryTableBody');
+      const inventorySearchInput = document.getElementById('inventorySearchInput'); // Updated ID
+      const inventorySearchBtn = document.getElementById('inventorySearchBtn'); // New button ID
+      const addBtn = document.getElementById('addBtn');
+      const updateBtn = document.getElementById('updateBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+      const editingInventoryIndexInput = document.getElementById('editingInventoryIndex');
+
+
+      function renderInventory(filter = '') {
+        inventoryTableBody.innerHTML = '';
+        const filteredInventory = inventory.filter(item =>
+          item.name.toLowerCase().includes(filter.toLowerCase())
+        );
+
+        if (filteredInventory.length === 0) {
+          inventoryTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">No inventory items found.</td></tr>';
+          return;
+        }
+
+        filteredInventory.forEach((item, idx) => {
+          // Find the original index in the main inventory array
+          const originalIndex = inventory.findIndex(i => i.name === item.name && i.qty === item.qty);
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td data-label="Item">${item.name}</td>
+            <td data-label="Quantity">${item.qty}</td>
+            <td data-label="Actions">
+              <button data-index="${originalIndex}" class="edit-inv-btn">Edit</button>
+              <button data-index="${originalIndex}" class="delete-inv-btn danger">Delete</button>
+            </td>
+          `;
+          inventoryTableBody.appendChild(tr);
+        });
+        saveData(); // Save after rendering
+        updateDashboard(); // Update dashboard metrics
+      }
+
+      // Handle form submission for add/update
+      inventoryForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const name = inventoryForm.itemName.value.trim();
+        const qty = parseInt(inventoryForm.itemQty.value);
+        const editingIndex = editingInventoryIndexInput.value;
+
+        if (!name || isNaN(qty) || qty < 0) {
+          alert("Please enter valid item name and quantity.");
+          return;
+        }
+
+        if (editingIndex !== '') { // Update existing item
+          const index = parseInt(editingIndex);
+          if (index >= 0 && index < inventory.length) {
+            inventory[index].name = name; // Allow editing name too
+            inventory[index].qty = qty;
+          }
+          updateBtn.classList.add('hidden');
+          cancelBtn.classList.add('hidden');
+          addBtn.classList.remove('hidden');
+          editingInventoryIndexInput.value = ''; // Clear editing index
+        } else { // Add new item or update quantity if exists
+          const existingIndex = inventory.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
+          if (existingIndex !== -1) {
+            inventory[existingIndex].qty = qty; // Just update quantity for existing item
+          } else {
+            inventory.push({
+              name,
+              qty
+            });
+          }
+        }
+
+        inventoryForm.reset();
+        renderInventory(inventorySearchInput.value); // Re-render with current filter
+      });
+
+      // Handle edit and delete clicks in inventory table
+      inventoryTableBody.addEventListener('click', e => {
+        if (e.target.classList.contains('delete-inv-btn')) {
+          const idx = e.target.getAttribute('data-index');
+          if (confirm(`Are you sure you want to delete "${inventory[idx].name}"?`)) {
+            inventory.splice(idx, 1);
+            renderInventory(inventorySearchInput.value);
+          }
+        } else if (e.target.classList.contains('edit-inv-btn')) {
+          const idx = e.target.getAttribute('data-index');
+          const item = inventory[idx];
+          inventoryForm.itemName.value = item.name;
+          inventoryForm.itemQty.value = item.qty;
+          editingInventoryIndexInput.value = idx; // Store index being edited
+
+          // Toggle form buttons
+          addBtn.classList.add('hidden');
+          updateBtn.classList.remove('hidden');
+          cancelBtn.classList.remove('hidden');
+        }
+      });
+
+      // Handle update button click (redundant with form submit, but good for clarity)
+      updateBtn.addEventListener('click', () => {
+        // Form submit handler will take care of the update
+        inventoryForm.dispatchEvent(new Event('submit'));
+      });
+
+      // Handle cancel button click
+      cancelBtn.addEventListener('click', () => {
+        inventoryForm.reset();
+        addBtn.classList.remove('hidden');
+        updateBtn.classList.add('hidden');
+        cancelBtn.classList.add('hidden');
+        editingInventoryIndexInput.value = '';
+      });
+
+      // Inventory search functionality (on button click)
+      inventorySearchBtn.addEventListener('click', () => {
+        const filter = inventorySearchInput.value;
+        renderInventory(filter);
+      });
+
+       // Inventory search functionality (on pressing Enter in input)
+      inventorySearchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault(); // Prevent form submission if input is inside a form
+          const filter = inventorySearchInput.value;
+          renderInventory(filter);
+        }
+      });
+
+
+      // Record Management
+      const recordForm = document.getElementById('recordForm');
+      const recordTableBody = document.getElementById('recordTableBody');
+
+      function renderRecords() {
+        recordTableBody.innerHTML = '';
+        if (records.length === 0) {
+          recordTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No pet records found.</td></tr>';
+          return;
+        }
+        records.forEach((rec, idx) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td data-label="Customer">${rec.customer}</td>
+            <td data-label="Pet">${rec.pet}</td>
+            <td data-label="Notes">${rec.notes || ''}</td>
+            <td data-label="Actions">
+              <button data-index="${idx}" class="delete-rec-btn danger">Delete</button>
+            </td>
+          `;
+          recordTableBody.appendChild(tr);
+        });
+        saveData(); // Save after rendering
+      }
+
+      recordForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const customer = recordForm.recCustomer.value.trim();
+        const pet = recordForm.recPet.value.trim();
+        const notes = recordForm.recNotes.value.trim();
+        if (!customer || !pet) {
+          alert('Customer and Pet name are required.');
+          return;
+        }
+        const existingIndex = records.findIndex(r => r.customer.toLowerCase() === customer.toLowerCase() && r.pet.toLowerCase() === pet.toLowerCase());
+        if (existingIndex !== -1) {
+          records[existingIndex].notes = notes; // Update notes for existing record
+        } else {
+          records.push({
+            customer,
+            pet,
+            notes
+          }); // Add new record
+        }
+        recordForm.reset();
+        renderRecords();
+      });
+
+      recordTableBody.addEventListener('click', e => {
+        if (e.target.classList.contains('delete-rec-btn')) {
+          const idx = e.target.getAttribute('data-index');
+          if (confirm(`Are you sure you want to delete the record for ${records[idx].pet} (${records[idx].customer})?`)) {
+            records.splice(idx, 1);
+            renderRecords();
+          }
+        }
+      });
+
+      // Staff Management (Availability added)
+      const staffForm = document.getElementById('staffForm');
+      const staffTableBody = document.getElementById('staffTableBody');
+
+      function renderStaff() {
+        staffTableBody.innerHTML = '';
+        if (staff.length === 0) {
+          staffTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No staff added yet.</td></tr>';
+        } else {
+          staff.forEach((stf, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td data-label="Name">${stf.name}</td>
+            <td data-label="Role">${stf.role}</td>
+            <td data-label="Availability">${stf.availability || 'Not specified'}</td>
+            <td data-label="Actions">
+              <button data-index="${idx}" class="delete-staff-btn danger">Delete</button>
+            </td>
+          `;
+            staffTableBody.appendChild(tr);
+          });
+        }
+        saveData(); // Save after rendering
+      }
+
+      staffForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const name = staffForm.staffName.value.trim();
+        const role = staffForm.staffRole.value;
+        const availability = staffForm.staffAvailability.value.trim(); // Get availability
+        if (!name || !role) {
+          alert("Please enter staff name and role.");
+          return;
+        }
+        if (staff.find(s => s.name.toLowerCase() === name.toLowerCase())) {
+          alert("Staff with this name already exists");
+          return;
+        }
+        staff.push({
+          name,
+          role,
+          availability // Add availability to staff object
+        });
+        staffForm.reset();
+        renderStaff(); // Re-render staff list
+      });
+
+      staffTableBody.addEventListener('click', e => {
+        if (e.target.classList.contains('delete-staff-btn')) {
+          const idx = e.target.getAttribute('data-index');
+          const staffName = staff[idx].name;
+          if (confirm(`Are you sure you want to delete staff member "${staffName}"?`)) {
+            staff.splice(idx, 1);
+            renderStaff(); // Re-render staff list
+          }
+        }
+      });
+
+       // User Management
+      const userForm = document.getElementById('userForm');
+      const userTableBody = document.getElementById('userTableBody');
+
+      function renderUsers() {
+        userTableBody.innerHTML = '';
+        if (users.length === 0) {
+          // Updated colspan to 4
+          userTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No users added yet.</td></tr>';
+          return;
+        }
+        users.forEach((user, idx) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td data-label="Name">${user.name}</td>
+            <td data-label="Role">${user.role}</td>
+            <td data-label="Password">${user.password}</td> <!-- Added Password Data -->
+            <td data-label="Actions">
+              <button data-index="${idx}" class="delete-user-btn danger">Delete</button>
+            </td>
+          `;
+          userTableBody.appendChild(tr);
+        });
+        saveData(); // Save after rendering
+      }
+
+      userForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const name = userForm.userName.value.trim();
+        const password = userForm.userPassword.value; // Passwords should be hashed in a real app
+        const role = userForm.userRole.value;
+        if (!name || !password || !role) {
+          alert("Please enter user name, password, and role.");
+          return;
+        }
+         if (users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
+          alert("User with this name already exists");
+          return;
+        }
+        users.push({
+          name,
+          password, // Storing plain password is NOT secure for real apps!
+          role
+        });
+        userForm.reset();
+        renderUsers(); // Re-render user list
+      });
+
+      userTableBody.addEventListener('click', e => {
+        if (e.target.classList.contains('delete-user-btn')) {
+          const idx = e.target.getAttribute('data-index');
+           if (confirm(`Are you sure you want to delete user "${users[idx].name}"?`)) {
+             users.splice(idx, 1);
+             renderUsers(); // Re-render user list
+           }
+        }
+      });
+
+
+      // Initial render calls
+      renderAppointments();
+      renderSales();
+      renderInventory(); // Initial render without filter
+      renderRecords();
+      renderStaff(); // Initial render of staff
+      renderUsers(); // Initial render of users
+      updateDashboard(); // Initial dashboard update
+
+    })();
+  </script>
+</body>
+
+</html>
